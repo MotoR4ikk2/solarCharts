@@ -1,4 +1,4 @@
-<div>
+<<div>
     <canvas id="myChart"></canvas>
   </div>
   
@@ -279,65 +279,118 @@ let chartData2023 = [
 ];
 
 function processChartData(chartData) {
-    const energyToGridData = [];
-    const consumerData = [];
-    const monthLabel = [];
-    const yearLabel = [];
+    const energyToGridData = {};
+    const consumerData = {};
+    const genToSomewhere = {};
+    const mounth = [];
 
     chartData.forEach(chartItem => {
         chartItem.data.forEach(dataPoint => {
-            const value = dataPoint[1];
-
+            processMounth(dataPoint, mounth);
             if (chartItem.id === 'FromGenToGrid') {
-                processEnergyToGridData(dataPoint, energyToGridData, monthLabel, yearLabel);
+                processEnergyToGridData(dataPoint, energyToGridData);
             } else if (chartItem.id === 'FromGenToConsumer') {
                 processConsumerData(dataPoint, consumerData);
             }
+            else if (chartItem.id === 'FromGenToSomewhere'){
+                processGenToSomewhere(dataPoint, genToSomewhere);
+            }
         });
     });
-
-    const generateEnergy = energyToGridData.map((value, index) => {
-        return value + consumerData[index];
-    });
-
+    
     return {
         energyToGridData,
         consumerData,
-        monthLabel,
-        yearLabel,
-        generateEnergy
-    };
+        genToSomewhere,
+        mounth,
+    }
 }
 
-function processEnergyToGridData(dataPoint, energyToGridData, monthLabel, yearLabel) {
-    const time = new Date(dataPoint[0]);
-    const monthName = time.toLocaleDateString('uk-UA', { month: 'long' });
-    const yearName = time.toLocaleDateString('uk-UA', { year: 'numeric' });
-    yearLabel.push(yearName);
-    monthLabel.push(monthName);
-    energyToGridData.push(dataPoint[1]);
+function processEnergyToGridData(dataPoint, energyToGridData) {
+    let times = dataPoint[0];
+    times = new Date(times);
+    let formatedTimes = times.toLocaleDateString('uk-UA', { month: 'long' });
+    if (!energyToGridData[formatedTimes]) {
+        energyToGridData[formatedTimes] = 0;
+    }
+    energyToGridData[formatedTimes] += dataPoint[1];
 }
 
 function processConsumerData(dataPoint, consumerData) {
-    consumerData.push(dataPoint[1]);
+    let times = dataPoint[0];
+    times = new Date(times);
+    let formatedTimes = times.toLocaleDateString('uk-UA', { month: 'long' });
+    
+    if (!consumerData[formatedTimes]) {
+        consumerData[formatedTimes] = 0;
+    }
+    consumerData[formatedTimes] += dataPoint[1];
 }
 
-// Використання функції
+function processMounth(dataPoint, mounth) {
+    let times = dataPoint[0];
+    times = new Date(times);
+    let formatedTimes = times.toLocaleDateString('uk-UA', { month: 'long' });
+    mounth.push(formatedTimes);
+}
+
+function processGenToSomewhere(dataPoint, genToSomewhere) {
+    let times = dataPoint[0];
+    times = new Date(times);
+    let formatedTimes = times.toLocaleDateString('uk-UA', { month: 'long' });
+    
+    if (!genToSomewhere[formatedTimes]) {
+        genToSomewhere[formatedTimes] = 0;
+    }
+    genToSomewhere[formatedTimes] += dataPoint[1];
+}
+
 const chartDataResult2022 = processChartData(chartData2022);
 const chartDataResult2023 = processChartData(chartData2023);
+    
+function mergeObjects(obj1, obj2, obj3) {
+    const result = {};
+
+    // Додаємо значення для obj1
+    for (const key in obj1) {
+        if (obj1.hasOwnProperty(key)) {
+            result[key] = obj1[key];
+        }
+    }
+
+    // Додаємо значення для obj2
+    for (const key in obj2) {
+        if (obj2.hasOwnProperty(key)) {
+            result[key] = (result[key] || 0) + obj2[key];
+        }
+    }
+
+    // Додаємо значення для obj3
+    for (const key in obj3) {
+        if (obj3.hasOwnProperty(key)) {
+            result[key] = (result[key] || 0) + obj3[key];
+        }
+    }
+
+    return result;
+}
+
+const totalkWh2022 = mergeObjects(chartDataResult2022.energyToGridData, chartDataResult2022.consumerData, chartDataResult2022.genToSomewhere);    
+const totalkWh2023 = mergeObjects(chartDataResult2023.energyToGridData, chartDataResult2023.consumerData, chartDataResult2023.genToSomewhere);
+
     const ctx = document.getElementById('myChart');
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: chartDataResult2023.monthLabel,
+        labels: chartDataResult2023.month,
         datasets: [{
-          label: '# кВт 2022',
-          data: chartDataResult2022.generateEnergy,
+          label: '# кВт 2023',
+          data: totalkWh2023,
           borderWidth: 1
         },
         {
-          label: '# кВт 2023',
-          data: chartDataResult2023.generateEnergy,
+          label: '# кВт 2022',
+          data: totalkWh2022,
           borderWidth: 1
         }]
       },
