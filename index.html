@@ -378,24 +378,60 @@
     const totalkWh2023 = mergeObjects(chartDataResult2023.energyToGridData, chartDataResult2023.consumerData, chartDataResult2023.genToSomewhere);
     const monthData = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
     
+
+    let arrayObjects23 = [];
+
+        for (let key in totalkWh2023) {
+            if (totalkWh2023.hasOwnProperty(key)) {
+            let newObject = {
+                label: key,
+                value: totalkWh2023[key]
+            };
+            arrayObjects23.push(newObject);
+  }
+}
+
+
+    let arrayObjects22 = [];
+
+        for (let key in totalkWh2022) {
+            if (totalkWh2022.hasOwnProperty(key)) {
+             let newObject = {
+            label: key,
+            value: totalkWh2022[key]
+    };
+    
+    arrayObjects22.push(newObject);
+}
+}
+
+
+
+
     const kv2023 = Object.values(totalkWh2023);
-    console.log(chartDataResult2023);
     Chart.register(ChartDataLabels);
 
 const ctx = document.getElementById('myChart').getContext('2d');
 new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: monthData,
     datasets: [{
       label: '# кВт 2023',
-      data: totalkWh2023,
+      data: arrayObjects23,
       borderWidth: 1,
-    },
-    {
+      parsing: {
+        xAxisKey: 'label',
+        yAxisKey: 'value'
+      }
+      },
+      {
       label: '# кВт 2022',
-      data: totalkWh2022,
+      data: arrayObjects22,
       borderWidth: 1,
+      parsing: {
+        xAxisKey: 'label',
+        yAxisKey: 'value'
+      }
     }]
   },
   options: {
@@ -412,9 +448,7 @@ new Chart(ctx, {
         weight: 'bold'
       },
       formatter: function(value, context) {
-        let labelKwh = (context.dataset.data);
-        console.log(labelKwh);
-        return labelKwh;
+        return value.value;
       }
     }
   }
