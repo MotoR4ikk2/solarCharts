@@ -1,14 +1,11 @@
+const monthData = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
+const ctx = document.getElementById('myChart').getContext('2d');
 const chartDataResult2022 = processChartData(chartData2022);
 const chartDataResult2023 = processChartData(chartData2023);
 const totalkWh2022 = mergeObjects(chartDataResult2022.energyToGridData, chartDataResult2022.consumerData, chartDataResult2022.genToSomewhere);
 const totalkWh2023 = mergeObjects(chartDataResult2023.energyToGridData, chartDataResult2023.consumerData, chartDataResult2023.genToSomewhere);
-const monthData = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
-const ctx = document.getElementById('myChart').getContext('2d');
 
-let arrayObjects23 = [];
-let arrayObjects22 = [];
-
-Chart.register(ChartDataLabels);
+let arrayObjects22 = [], arrayObjects23 = [];
 
 for (let key in totalkWh2023) {
     if (totalkWh2023.hasOwnProperty(key)) {
@@ -30,6 +27,8 @@ for (let key in totalkWh2022) {
         arrayObjects22.push(newObject);
     }
 }
+
+Chart.register(ChartDataLabels);
 
 new Chart(ctx, {
     type: 'bar',
