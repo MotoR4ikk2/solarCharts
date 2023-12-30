@@ -23,7 +23,6 @@ for (let key in totalkWh2022) {
             label: key,
             value: totalkWh2022[key]
         };
-
         arrayObjects22.push(newObject);
     }
 }
