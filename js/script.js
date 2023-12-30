@@ -93,7 +93,6 @@ const totalkWh2022 = mergeObjects(chartDataResult2022.energyToGridData, chartDat
 const totalkWh2023 = mergeObjects(chartDataResult2023.energyToGridData, chartDataResult2023.consumerData, chartDataResult2023.genToSomewhere);
 const monthData = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
 
-
 let arrayObjects23 = [];
 
 for (let key in totalkWh2023) {
@@ -105,7 +104,6 @@ for (let key in totalkWh2023) {
         arrayObjects23.push(newObject);
     }
 }
-
 
 let arrayObjects22 = [];
 
