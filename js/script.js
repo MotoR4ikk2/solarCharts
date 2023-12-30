@@ -159,7 +159,7 @@ new Chart(ctx, {
                     weight: 'bold'
                 },
                 formatter: function (value, context) {
-                    return value.value;
+                    return Math.round(value.value) + ' кВт';
                 }
             }
         }
